@@ -30,6 +30,15 @@ class Game {
     this.enemyInterval = Math.random() * 10000 + 5000;
 
     this.deltatime = 0;
+    this.stop = 1;
+    this.gameTimer = 10000;
+    this.score = 0;
+  }
+
+  restart() {
+    this.backgroundLayers.forEach((layer) => layer.restart());
+    this.player.restart();
+    this.enemies = [];
   }
 
   controlsInput() {
@@ -39,7 +48,8 @@ class Game {
         (e.code === "ArrowDown" ||
           e.code === "ArrowUp" ||
           e.code === "ArrowLeft" ||
-          e.code === "ArrowRight") &&
+          e.code === "ArrowRight" ||
+          e.code === "Space") &&
         this.keys.indexOf(e.code) === -1
       ) {
         this.keys.push(e.code);
@@ -51,7 +61,8 @@ class Game {
         e.code === "ArrowDown" ||
         e.code === "ArrowUp" ||
         e.code === "ArrowLeft" ||
-        e.code === "ArrowRight"
+        e.code === "ArrowRight" ||
+        e.code === "Space"
       ) {
         this.keys.splice(this.keys.indexOf(e.code), 1);
       }
@@ -60,7 +71,7 @@ class Game {
 
   enemyHandler() {
     if (this.enemyTimer > this.enemyInterval) {
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 5; i++) {
         if (Math.random() < 0.5) {
           this.enemies.push(new Enemy(this, "Enemies/birds/Eat.png"));
         } else {
@@ -78,6 +89,40 @@ class Game {
     this.backgroundLayers = [...images];
   }
 
+  drawTime() {
+    this.context.fillStyle = "black";
+
+    this.context.font = " 25px helvetica";
+    this.context.fillText(
+      "Time " + (this.gameTimer / 100).toFixed(0),
+      (this.width - 3) * 0.6,
+      100 - 3
+    );
+    this.context.fillStyle = "white";
+
+    this.context.font = "25px helvetica";
+    this.context.fillText(
+      "Time " + (this.gameTimer / 100).toFixed(0),
+      this.width * 0.6,
+      100
+    );
+  }
+
+  drawScore() {
+    this.context.fillStyle = "black";
+
+    this.context.font = " 25px helvetica";
+    this.context.fillText(
+      "Score " + this.score,
+      (this.width - 3) * 0.4,
+      100 - 3
+    );
+    this.context.fillStyle = "white";
+
+    this.context.font = "25px helvetica";
+    this.context.fillText("Score " + this.score, this.width * 0.4, 100);
+  }
+
   draw() {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -85,14 +130,22 @@ class Game {
       obj.draw();
     });
     this.player.draw();
+    this.drawTime();
+    this.drawScore();
   }
 
   runLogic() {
     [...this.backgroundLayers, ...this.enemies].forEach(function (obj) {
       obj.runLogic();
     });
+
     this.enemyHandler();
+    let score = this.enemies.length;
     this.enemies = this.enemies.filter((enemy) => !enemy.finished);
+    score = score - this.enemies.length;
+    this.score += score;
+
+    this.enemies = this.enemies.filter((enemy) => !enemy.away);
     this.player.runLogic();
   }
 
@@ -103,6 +156,7 @@ class Game {
       const dt = timeStamp - this.lastTime;
       this.lastTime = timeStamp;
       this.deltatime = dt;
+      this.gameTimer--;
       this.loop();
     });
   }

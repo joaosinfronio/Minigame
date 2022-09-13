@@ -9,7 +9,6 @@ class Player {
     this.y = this.game.height - this.height;
     this.image = new Image();
 
-    this.maxFrame = 4;
     this.frameX = 0;
     this.fps = 15;
     this.frameTimer = 0;
@@ -17,54 +16,126 @@ class Player {
 
     this.speed = 0;
     this.forceUp = 0;
-    this.gravity = 1.5;
-    this.jumpingState = false;
-    this.lives = 10;
+    this.gravity = 1.2;
+    this.restart();
 
-    this.direction = 1;
-
-    this.image.src = "player/Walk.png";
+    // this.maxFrame = 4;
+    // this.jumpingState = false;
+    // this.lives = 10;
+    // this.direction = 1;
+    // this.state = "";
+    // this.power = 0;
+    // this.attack = 0;
+    // this.image.src = "player/Walk.png";
   }
 
-  checkForColision(enemy) {
+  restart() {
+    this.x = 0;
+    this.y = this.game.height - this.height;
+
+    this.maxFrame = 4;
+    this.image.src = "player/Walk.png";
+
+    this.lives = 10;
+    this.direction = 1;
+    this.power = 0;
+    this.attack = 0;
+
+    this.jumpingState = false;
+    this.state = "";
+    this.powerTime = 300;
+    this.maxPower = 300;
+  }
+
+  //Checks for a colision with enemies
+  //Circles with radius = width *0.3
+  checkForColision(enemy, modifier) {
     let dx = enemy.x - this.x;
     let dy = enemy.y - this.y;
     let distance = Math.sqrt(dx * dx + dy * dy);
-    if (distance < enemy.width / 2 + this.width / 2) {
+
+    let radiusEnemy = enemy.width * modifier;
+    let radiusplayer = this.width * modifier;
+
+    if (distance < radiusEnemy + radiusplayer) {
       enemy.finished = true;
       return true;
     }
     return false;
   }
 
-  // checkForAlert(enemy) {
-  //   let dx = enemy.x - this.x;
-  //   let dy = enemy.x - this.y;
-  //   let distance = Math.sqrt(dx * dx + dy * dy);
-  //   if (distance < enemy.width * 5 + this.width * 5) {
-  //     enemy.flyState = true;
-  //     return true;
-  //   }
-  //   enemy.flyState = false;
-  //   return false;
-  // }
+  //Checks for Distance of alert with enemy
+  checkForAlert(enemy) {
+    if (this.checkForColision(enemy, 3)) {
+      enemy.finished = false;
+      enemy.flyState = true;
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  //Removes lives from player
+  removeLives() {
+    if (this.state !== "hurt") {
+      this.lives--;
+    }
+  }
+
+  drawLives() {
+    this.game.context.fillStyle = "black";
+
+    this.game.context.font = " 25px helvetica";
+    this.game.context.fillText(
+      "Lives " + this.lives,
+      (this.game.width - 2) * 0.2,
+      100 - 3
+    );
+    this.game.context.fillStyle = "white";
+
+    this.game.context.font = "25px helvetica";
+    this.game.context.fillText(
+      "Lives " + this.lives,
+      this.game.width * 0.2,
+      100
+    );
+  }
+
+  drawPower() {
+    this.game.context.fillStyle = "black";
+
+    this.game.context.font = " 25px helvetica";
+    this.game.context.fillText(
+      "Power " + (this.power / this.powerTime).toFixed(0),
+      this.game.width * 0.8 - 2,
+      100 - 3
+    );
+    this.game.context.fillStyle = "white";
+
+    this.game.context.font = "25px helvetica";
+    this.game.context.fillText(
+      "Power " + (this.power / this.powerTime).toFixed(0),
+      this.game.width * 0.8,
+      100
+    );
+  }
 
   // recives a argument for multiples canvas elements
   draw() {
-    this.game.context.fillStyle = "white";
+    //Size of colision area
 
-    this.game.context.font = "12px sans-serif";
-    this.game.context.fillText("Lives" + this.lives, 100, 100);
+    // this.game.context.beginPath();
+    // this.game.context.arc(
+    //   this.x + this.width / 2,
+    //   this.y + this.height / 1.5,
+    //   this.width * 0.3,
+    //   0,
+    //   Math.PI * 2
+    // );
+    // this.game.context.stroke();
 
-    this.game.context.beginPath();
-    this.game.context.arc(
-      this.x + this.width / 2,
-      this.y + this.height / 1.5,
-      this.width * 0.4,
-      0,
-      Math.PI * 2
-    );
-    this.game.context.stroke();
+    this.drawLives();
+    this.drawPower();
 
     this.game.context.drawImage(
       this.image,
@@ -79,10 +150,12 @@ class Player {
     );
   }
 
+  //Could check for paltforms
   checkJumping() {
     if (
       this.y <
       this.game.height - this.height
+
       /* || !checkForPlatform()*/
     ) {
       this.jumpingState = true;
@@ -92,49 +165,57 @@ class Player {
     return this.jumpingState;
   }
 
-  runLogic() {
-    //Screen Speed of Player
+  //Kills a enemy if is inline
+  killEnemy(enemy) {
+    if (
+      this.y < enemy.y &&
+      this.y + this.height > enemy.height &&
+      this.attack === 1
+    ) {
+      enemy.finished = true;
+    }
+  }
+
+  handleEnemies() {
     for (var enemy of this.game.enemies) {
-      if (this.checkForColision(enemy)) {
-        this.lives--;
+      if (this.checkForColision(enemy, 0.3)) {
+        this.removeLives();
+        this.state = "hurt";
+        enemy.away = true;
+      }
+      if (this.checkForAlert(enemy)) {
+        this.killEnemy(enemy);
       }
     }
+  }
+
+  handleFrames() {
     if (this.frameTimer > this.frameInterval) {
       if (this.frameX > this.maxFrame) {
         this.frameX = 0;
-      } else {
-        this.frameX += 1;
+      } else if (this.frameX <= 0) {
+        this.frameX = this.maxFrame;
+      }
+      {
+        this.frameX += 1 * this.direction;
       }
       this.frameTimer = 0;
     } else {
       this.frameTimer += this.game.deltatime;
     }
+  }
 
-    if (this.game.keys.indexOf("ArrowRight") > -1) {
-      //Controls
-      this.speed = 5;
-      this.direction = 1;
-    } else if (this.game.keys.indexOf("ArrowLeft") > -1) {
-      this.direction = -1;
-      this.speed = -5;
-    } else {
-      this.direction = 1;
-      this.speed = 0;
-    }
-    if (this.game.keys.indexOf("ArrowUp") > -1 && !this.checkJumping()) {
-      this.forceUp -= 22;
-    }
-
-    //Horizontal movement
-    this.x += this.speed;
+  horizontalMovement() {
+    this.x += this.speed * this.game.stop;
 
     if (this.x < 0) {
       this.x = 0;
-    } else if (this.x + this.width > this.game.width) {
-      this.x = this.game.width - this.width;
+    } else if (this.x + this.width > this.game.width * 0.8) {
+      this.x = this.game.width * 0.8 - this.width;
     }
+  }
 
-    //Vertical movement
+  verticalMovement() {
     this.y += this.forceUp;
     if (this.checkJumping()) {
       this.image.src = "player/Jump.png";
@@ -152,11 +233,85 @@ class Player {
       if (this.direction === -1) {
         this.image.src = "player/reverseWalk.png";
       }
+      if (this.game.stop === 0) {
+        this.frameX = 0;
+        this.image.src = "player/Idle.png";
+      }
 
       this.forceUp = 0;
     }
+  }
+
+  runLogic() {
+    //Check for enemys colision
+    this.handleEnemies();
+
+    //Movement between Frames of Sprite
+    this.handleFrames();
+
+    //Movement controls
+    //Movement Right
+    if (this.game.keys.indexOf("ArrowRight") > -1) {
+      this.speed = this.game.speed;
+      this.direction = 1;
+      this.game.stop = 1;
+
+      //Movement Left
+    } else if (this.game.keys.indexOf("ArrowLeft") > -1) {
+      this.direction = -1;
+      this.speed = -this.game.speed;
+      this.game.stop = 1;
+
+      //Stop moving
+    } else if (this.game.keys.indexOf("ArrowDown") > -1) {
+      this.direction = 0;
+      this.speed = 0;
+      this.game.stop = 0;
+
+      //Attack
+    } else if (
+      this.game.keys.indexOf("Space") > -1 &&
+      this.power > this.powerTime
+    ) {
+      this.attack = 1;
+      this.power = 0;
+    } else {
+      this.speed = 0;
+    }
+    if (this.power < this.maxPower + 2) {
+      this.power++;
+    }
+    //Fall
+    if (this.game.keys.indexOf("ArrowUp") > -1 && !this.checkJumping()) {
+      this.forceUp -= 22;
+    }
+
+    //Horizontal movement
+    this.horizontalMovement();
+
+    //Vertical movement
+
+    this.verticalMovement();
+
+    //On the Ground
     if (this.y > this.game.height - this.height) {
       this.y = this.game.height - this.height;
+    }
+
+    //If its Hurt
+    if (this.state === "hurt") {
+      this.image.src = "player/Hurt.png";
+      setTimeout(() => (this.state = ""), 3000);
+    }
+
+    //If Attacks
+    if (this.attack === 1) {
+      this.image.src = "player/Attack.png";
+      this.maxFrame = 2;
+      setTimeout(() => {
+        this.attack = 0;
+        this.maxFrame = 4;
+      }, 200);
     }
   }
 }

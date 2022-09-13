@@ -3,19 +3,38 @@ class Background {
     this.game = game;
     this.x = 0;
     this.y = 0;
-    this.width = 928;
-    this.height = 793;
+
+    this.width = this.game.width;
+    this.height = this.game.height;
+
     this.image = image;
+
     this.vSpeed = vSpeed;
     this.speed = this.game.speed * this.vSpeed;
   }
 
+  restart() {
+    this.x = 0;
+  }
+
   runLogic() {
-    this.speed = this.game.speed * this.vSpeed;
+    //For reverse direction linked with player direction
+    this.speed =
+      this.game.speed *
+      this.vSpeed *
+      this.game.stop *
+      this.game.player.direction;
+
+    //For reverse direction linked with player direction
+    if (this.x >= 0 && this.game.player.direction === -1) {
+      this.x = 0;
+    }
     if (this.x <= -this.width) {
       this.x = 0;
     }
-    this.x = this.x - this.speed;
+    if (this.game.player.x > this.game.width / 5) {
+      this.x = this.x - this.speed;
+    }
   }
 
   draw() {
