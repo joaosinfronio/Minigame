@@ -9,6 +9,15 @@ window.addEventListener("load", () => {
 
   //Create a Game
   const game = new Game(gameScreenElement, gameOverScreenElement);
+  const images = [
+    "Enemies/vulture/Idle.png",
+    "Enemies/vulture/Vulture_walk.png",
+    "Enemies/birds/Eat.png",
+    "Enemies/birds/Walk.png",
+    "player/Attack.png",
+    "player/Jump.png",
+    "player/reverseWalk.png",
+  ];
 
   const backgroundLayer1 = new Image();
   backgroundLayer1.src = "background/layer-0.png";
