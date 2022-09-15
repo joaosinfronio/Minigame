@@ -1,26 +1,28 @@
-class Pigeon extends GeneralEnemy {
+class Vulture extends GeneralEnemy {
   constructor(game, source) {
     super(game, source);
+    this.width = 90;
+    this.height = 90;
 
-    this.width = 60;
-    this.height = 60;
-    this.spriteWidth = 128;
-    this.spriteHeight = 32;
+    this.spriteWidth = 192;
+    this.spriteHeight = 48;
 
     this.x = this.game.width + Math.random() * 100;
     this.y = this.game.height - this.height;
 
-    this.ySpeed = Math.random() * 5 + 3;
+    this.ySpeed = Math.random() * 4 + 2;
     this.xSpeed = 1;
 
     this.maxHeight =
-      this.game.height - this.height - (Math.random() * this.game.height) / 2;
+      this.game.height - this.height - (Math.random() * this.game.height) / 3;
+
     this.maxFrame = 3;
     this.totalFrames = 4;
     this.flyState = false;
+
     this.finished = false;
     this.away = false;
-    this.lives = 1;
+    this.lives = 30;
   }
 
   runLogic() {
@@ -30,7 +32,7 @@ class Pigeon extends GeneralEnemy {
     }
 
     if (this.flyState) {
-      this.image.src = "Enemies/birds/Walk.png";
+      this.image.src = "Enemies/vulture/Vulture_walk.png";
       if (this.y > this.maxHeight) {
         this.y = this.y - this.ySpeed;
         this.xSpeed = Math.random() * 2 + 1.5;

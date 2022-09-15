@@ -8,13 +8,25 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <canvas id="canvasMain"></canvas>
+    <div id="start" class="screen">
+      <h1>Dog Day</h1>
+      <img src="player/Jump.png" alt="Dog Jumping" />
+      <h3>Lets Walk</h3>
+    </div>
+    <div id="game" class="screen" style="display: none">
+      <canvas id="canvasMain"></canvas>
+    </div>
+    <div id="gameOver" class="screen" style="display: none">
+      <h1>GAME OVER</h1>
+      <img src="Enemies/vulture/Vulture.png" alt="" />
+    </div>
 
     <script src="player.js"></script>
     <script src="background.js"></script>
     <script src="general.js"></script>
 
     <script src="enemy.js"></script>
+    <script src="vulture.js"></script>
 
     <script src="game.js"></script>
     <script src="script.js"></script>

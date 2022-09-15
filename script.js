@@ -1,6 +1,14 @@
 window.addEventListener("load", () => {
+  const startScreenElement = document.querySelector("#start");
+  const gameScreenElement = document.querySelector("#game");
+  const gameOverScreenElement = document.querySelector("#gameOver");
+
+  const startButton = startScreenElement.querySelector("img");
+
+  const playAgainButton = gameOverScreenElement.querySelector("img");
+
   //Create a Game
-  const game = new Game();
+  const game = new Game(gameScreenElement, gameOverScreenElement);
 
   const backgroundLayer1 = new Image();
   backgroundLayer1.src = "background/layer-0.png";
@@ -45,5 +53,16 @@ window.addEventListener("load", () => {
   game.addBackgroundLayers(gameLayers);
 
   //Start the game
-  game.start();
+
+  startButton.addEventListener("click", () => {
+    game.start();
+    startScreenElement.style.display = "none";
+    gameScreenElement.style.display = "";
+  });
+
+  playAgainButton.addEventListener("click", () => {
+    game.restart();
+    gameOverScreenElement.style.display = "none";
+    gameScreenElement.style.display = "";
+  });
 });

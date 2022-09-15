@@ -8,34 +8,29 @@ class GeneralEnemy {
     this.frameInterval = 1000 / this.fps;
     this.frameX = 0;
 
-    this.width;
-    this.height;
-    this.x = this.game.width + Math.random() * 100;
-    this.y = this.game.height - this.height;
-    this.spriteWidth;
-    this.spriteHeight;
+    //     this.width = 60;
+    //     this.height = 60;
+    //     this.x = this.game.width + Math.random() * 100;
+    //     this.y = this.game.height - this.height;
+    //     this.spriteWidth = 128;
+    //     this.spriteHeight = 32;
 
-    this.ySpeed = Math.random() * 5 + 3;
-    this.xSpeed = 1;
+    //     this.ySpeed = Math.random() * 5 + 3;
+    //     this.xSpeed = 1;
 
-    this.maxHeight =
-      this.game.height - this.height - (Math.random() * this.game.height) / 2;
+    //     this.maxHeight =
+    //       this.game.height - this.height - (Math.random() * this.game.height) / 2;
 
-    this.maxFrame;
-    this.totalFrames;
+    //     this.maxFrame = 3;
+    //     this.totalFrames = 4;
+
+    //     this.flyState = false;
+
+    //     this.finished = false;
+    //     this.away = false;
   }
 
   draw() {
-    this.game.context.beginPath();
-    this.game.context.arc(
-      this.x + this.width / 2,
-      this.y + this.height / 1.5,
-      this.width * 0.3,
-      0,
-      Math.PI * 2
-    );
-    this.game.context.stroke();
-
     this.game.context.drawImage(
       this.image,
       (Math.floor(this.frameX) * this.spriteWidth) / this.totalFrames,

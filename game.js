@@ -1,5 +1,7 @@
 class Game {
-  constructor() {
+  constructor(gameScreenElement, gameOverScreenElement) {
+    this.gameScreenElement = gameScreenElement;
+    this.gameOverScreenElement = gameOverScreenElement;
     //define canvas
     this.canvas = document.querySelector("canvas");
     this.context = this.canvas.getContext("2d");
@@ -31,14 +33,26 @@ class Game {
 
     this.deltatime = 0;
     this.stop = 1;
+    this.loose = false;
     this.gameTimer = 10000;
     this.score = 0;
+    this.id;
   }
 
   restart() {
     this.backgroundLayers.forEach((layer) => layer.restart());
     this.player.restart();
     this.enemies = [];
+    this.keys = [];
+
+    this.score = 0;
+    this.loose = false;
+    this.gameTimer = 10000;
+    this.lastTime = 0;
+    this.enemyTimer = 0;
+    this.deltatime = 0;
+    this.speed = 3.5;
+    this.id;
   }
 
   controlsInput() {
@@ -71,13 +85,22 @@ class Game {
 
   enemyHandler() {
     if (this.enemyTimer > this.enemyInterval) {
-      for (let i = 0; i < 5; i++) {
-        if (Math.random() < 0.5) {
-          this.enemies.push(new Enemy(this, "Enemies/birds/Eat.png"));
-        } else {
-          this.enemies.push(new Enemy(this, "Enemies/birds/Idle.png"));
+      if (Math.random() < 0.5) {
+        for (let i = 0; i < 1; i++) {
+          this.enemies.push(new Vulture(this, "Enemies/vulture/Idle.png"));
         }
       }
+
+      if (Math.random() > 0.2) {
+        for (let i = 0; i < 5; i++) {
+          if (Math.random() < 0.5) {
+            this.enemies.push(new Pigeon(this, "Enemies/birds/Eat.png"));
+          } else {
+            this.enemies.push(new Pigeon(this, "Enemies/birds/Idle.png"));
+          }
+        }
+      }
+
       this.enemyTimer = 0;
     } else {
       this.enemyTimer += this.deltatime;
@@ -147,18 +170,38 @@ class Game {
 
     this.enemies = this.enemies.filter((enemy) => !enemy.away);
     this.player.runLogic();
+    this.gameOver();
+  }
+
+  displayOver() {
+    this.gameScreenElement.style.display = "none";
+    this.gameOverScreenElement.style.display = "";
+  }
+  gameOver() {
+    if (this.player.lives <= 0 || this.gameTimer === 0) {
+      window.cancelAnimationFrame(this.id);
+      this.loose = true;
+      this.displayOver();
+      this.restart();
+      return true;
+    }
+    // this.lost = true;
+    // enter dog2
+    //
   }
 
   loop() {
     this.draw();
     this.runLogic();
-    requestAnimationFrame((timeStamp) => {
-      const dt = timeStamp - this.lastTime;
-      this.lastTime = timeStamp;
-      this.deltatime = dt;
-      this.gameTimer--;
-      this.loop();
-    });
+    if (this.loose === false) {
+      this.id = window.requestAnimationFrame((timeStamp) => {
+        const dt = timeStamp - this.lastTime;
+        this.lastTime = timeStamp;
+        this.deltatime = dt;
+        this.gameTimer--;
+        this.loop();
+      });
+    }
   }
 
   start() {

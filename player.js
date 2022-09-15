@@ -66,7 +66,7 @@ class Player {
 
   //Checks for Distance of alert with enemy
   checkForAlert(enemy) {
-    if (this.checkForColision(enemy, 3)) {
+    if (this.checkForColision(enemy, 2.5)) {
       enemy.finished = false;
       enemy.flyState = true;
       return true;
@@ -172,7 +172,8 @@ class Player {
       this.y + this.height > enemy.height &&
       this.attack === 1
     ) {
-      enemy.finished = true;
+      enemy.lives--;
+      return true;
     }
   }
 
