@@ -7,6 +7,8 @@ class GeneralEnemy {
     this.frameTimer = 0;
     this.frameInterval = 1000 / this.fps;
     this.frameX = 0;
+    this.direction = 1;
+    this.imageFly;
 
     //     this.width = 60;
     //     this.height = 60;
@@ -43,12 +45,39 @@ class GeneralEnemy {
       this.height
     );
   }
+
+  fly() {
+    if (this.lives <= 0) {
+      this.finished = true;
+    }
+
+    if (this.flyState) {
+      this.image.src = this.imageFly;
+
+      if (Math.random() > 0.98) {
+        this.y = this.y + Math.random() * this.ySpeed + this.ySpeed / 3;
+      } else {
+        this.y = this.y - Math.random() * this.ySpeed + this.ySpeed / 3;
+      }
+
+      this.xSpeed = Math.random() * 2 + 1.5;
+
+      this.x -= this.xSpeed * this.game.speedModifier;
+    } else {
+      this.x -= this.xSpeed * this.game.stop;
+    }
+
+    if (this.x < 0 - this.width) {
+      this.away = true;
+    }
+  }
+
   frameLogic() {
     if (this.frameTimer > this.frameInterval) {
       if (this.frameX > this.maxFrame) {
         this.frameX = 0;
       } else {
-        this.frameX += Math.random() * 1 + 0.2;
+        this.frameX += (Math.random() * 1 + 0.2) * this.direction;
       }
       this.frameTimer = 0;
     } else {

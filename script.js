@@ -17,6 +17,9 @@ window.addEventListener("load", () => {
     "player/Attack.png",
     "player/Jump.png",
     "player/reverseWalk.png",
+    "player/Hurt.png",
+    "player/Idle.png",
+    "player/reverseJump.png",
   ];
 
   const backgroundLayer1 = new Image();

@@ -8,6 +8,10 @@ class Player {
     this.x = 0;
     this.y = this.game.height - this.height;
     this.image = new Image();
+    this.sadSound = new Audio();
+    this.sadSound.src = "player/Sad Dog 1.wav";
+    this.sound = new Audio();
+    this.sound.volume = 0.15;
 
     this.frameX = 0;
     this.fps = 15;
@@ -35,6 +39,7 @@ class Player {
 
     this.maxFrame = 4;
     this.image.src = "player/Walk.png";
+    this.sound.src = "player/0.wav";
 
     this.lives = 10;
     this.direction = 1;
@@ -79,6 +84,7 @@ class Player {
   removeLives() {
     if (this.state !== "hurt") {
       this.lives--;
+      this.sadSound.play();
     }
   }
 
@@ -256,12 +262,14 @@ class Player {
       this.speed = this.game.speed;
       this.direction = 1;
       this.game.stop = 1;
+      this.game.speedModifier = 1;
 
       //Movement Left
     } else if (this.game.keys.indexOf("ArrowLeft") > -1) {
       this.direction = -1;
       this.speed = -this.game.speed;
       this.game.stop = 1;
+      this.game.speedModifier = 0.3;
 
       //Stop moving
     } else if (this.game.keys.indexOf("ArrowDown") > -1) {
@@ -275,6 +283,7 @@ class Player {
       this.power > this.powerTime
     ) {
       this.attack = 1;
+      this.sound.play();
       this.power = 0;
     } else {
       this.speed = 0;

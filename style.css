@@ -20,8 +20,21 @@ img {
   opacity: 60%;
 }
 
+#keys {
+  width: 60px;
+}
+.controls {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: space-evenly;
+}
+
 img:hover {
   opacity: 1;
+}
+span {
+  font-size: 30px;
 }
 
 .screen,

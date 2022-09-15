@@ -37,6 +37,9 @@ class Game {
     this.gameTimer = 10000;
     this.score = 0;
     this.id;
+    this.sound = new Audio();
+    this.sound.src = "background/AmbientNatureBirdsWater01.wav";
+    this.speedModifier = 1;
   }
 
   restart() {
@@ -48,6 +51,8 @@ class Game {
     this.score = 0;
     this.loose = false;
     this.gameTimer = 10000;
+    this.enemyInterval = Math.random() * 10000 + 5000;
+
     this.lastTime = 0;
     this.enemyTimer = 0;
     this.deltatime = 0;
@@ -84,13 +89,24 @@ class Game {
   }
 
   enemyHandler() {
+    //If time less then 40 less time time between enemies
+    if (this.gameTimer < 4000) {
+      this.enemyInterval = 5000;
+    }
+
+    //If is time to add enemies
     if (this.enemyTimer > this.enemyInterval) {
+      // Add vulure or cats
       if (Math.random() < 0.5) {
         for (let i = 0; i < 1; i++) {
           this.enemies.push(new Vulture(this, "Enemies/vulture/Idle.png"));
         }
+      } else {
+        for (let i = 0; i < 2; i++) {
+          this.enemies.push(new Cat(this, "Enemies/cat/Walk.png"));
+        }
       }
-
+      //Add piegons
       if (Math.random() > 0.2) {
         for (let i = 0; i < 5; i++) {
           if (Math.random() < 0.5) {
@@ -171,18 +187,21 @@ class Game {
     this.enemies = this.enemies.filter((enemy) => !enemy.away);
     this.player.runLogic();
     this.gameOver();
+    this.sound.play();
   }
 
   displayOver() {
     this.gameScreenElement.style.display = "none";
     this.gameOverScreenElement.style.display = "";
   }
+
   gameOver() {
-    if (this.player.lives <= 0 || this.gameTimer === 0) {
+    if (this.player.lives <= 0 || this.gameTimer <= 0) {
       window.cancelAnimationFrame(this.id);
       this.loose = true;
       this.displayOver();
       this.restart();
+      this.player.sadSound.src = "";
       return true;
     }
     // this.lost = true;

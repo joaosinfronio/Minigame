@@ -12,6 +12,22 @@
       <h1>Dog Day</h1>
       <img src="player/Jump.png" alt="Dog Jumping" />
       <h3>Lets Walk</h3>
+      <div class="controls">
+        <span>Press</span
+        ><img
+          id="keys"
+          src="https://cdn-icons-png.flaticon.com/512/2491/2491651.png"
+          alt="arrows"
+        />
+        <span>for movement</span>
+        <span>Press</span
+        ><img
+          id="keys"
+          src="https://cdn-icons-png.flaticon.com/512/107/107036.png"
+          alt="arrows"
+        />
+        <span>for attack</span>
+      </div>
     </div>
     <div id="game" class="screen" style="display: none">
       <canvas id="canvasMain"></canvas>
@@ -19,6 +35,7 @@
     <div id="gameOver" class="screen" style="display: none">
       <h1>GAME OVER</h1>
       <img src="Enemies/vulture/Vulture.png" alt="" />
+      <h3>Another Walk?</h3>
     </div>
 
     <script src="player.js"></script>
@@ -27,6 +44,7 @@
 
     <script src="enemy.js"></script>
     <script src="vulture.js"></script>
+    <script src="cat.js"></script>
 
     <script src="game.js"></script>
     <script src="script.js"></script>
