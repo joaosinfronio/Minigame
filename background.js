@@ -33,9 +33,8 @@ class Background {
     if (this.x <= -this.width) {
       this.x = 0;
     }
-    if (this.game.player.x > this.game.width * 0.05) {
-      this.x = this.x - this.speed;
-    }
+
+    this.x = this.x - this.speed;
   }
 
   //three images ina continued loop

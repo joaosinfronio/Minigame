@@ -30,28 +30,5 @@ class Vulture extends GeneralEnemy {
     super.frameLogic();
 
     super.fly();
-    // if (this.lives <= 0) {
-    //   this.finished = true;
-    // }
-
-    // if (this.flyState) {
-    //   this.image.src = "Enemies/vulture/Vulture_walk.png";
-
-    //   if (Math.random() > 0.91) {
-    //     this.y = this.y + Math.random() * this.ySpeed + this.ySpeed / 3;
-    //   } else {
-    //     this.y = this.y - Math.random() * this.ySpeed + this.ySpeed / 3;
-    //   }
-
-    //   this.xSpeed = Math.random() * 2 + 1.5;
-
-    //   this.x -= this.xSpeed * this.game.speedModifier;
-    // } else {
-    //   this.x -= this.xSpeed * this.game.stop;
-    // }
-
-    // if (this.x < 0 - this.width) {
-    //   this.away = true;
-    // }
   }
 }

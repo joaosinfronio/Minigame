@@ -54,7 +54,7 @@ class GeneralEnemy {
     if (this.flyState) {
       this.image.src = this.imageFly;
 
-      if (Math.random() > 0.98) {
+      if (Math.random() > 0.96) {
         this.y = this.y + Math.random() * this.ySpeed + this.ySpeed / 3;
       } else {
         this.y = this.y - Math.random() * this.ySpeed + this.ySpeed / 3;
