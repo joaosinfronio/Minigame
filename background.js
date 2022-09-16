@@ -26,8 +26,9 @@ class Background {
       this.game.player.direction;
 
     //For reverse direction linked with player direction
-    if (this.x >= 0 && this.game.player.direction === -1) {
-      this.x = 0;
+    //If limt is reached re posiition the image
+    if (this.x >= this.width) {
+      this.x = -this.width;
     }
     if (this.x <= -this.width) {
       this.x = 0;
@@ -37,7 +38,15 @@ class Background {
     }
   }
 
+  //three images ina continued loop
   draw() {
+    this.game.context.drawImage(
+      this.image,
+      this.x - this.width,
+      this.y,
+      this.width,
+      this.height
+    );
     this.game.context.drawImage(
       this.image,
       this.x,

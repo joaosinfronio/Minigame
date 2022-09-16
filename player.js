@@ -276,6 +276,7 @@ class Player {
       this.direction = 0;
       this.speed = 0;
       this.game.stop = 0;
+      this.game.speedModifier = 1;
 
       //Attack
     } else if (
