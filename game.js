@@ -18,6 +18,13 @@ class Game {
 
     //keys active for controls
     this.keys = [];
+    this.yTouch = "";
+    this.xTouch = "";
+
+    this.touchLimit = 30;
+    this.doubleTapTime = 0;
+    this.doubleTapTimeLimit = 10;
+    this.doublePermission = false;
 
     //Enable input controls
     this.controlsInput();
@@ -86,6 +93,60 @@ class Game {
         this.keys.splice(this.keys.indexOf(e.code), 1);
       }
     });
+
+    window.addEventListener("touchstart", (e) => {
+      this.xTouch = e.changedTouches[0].pageX;
+      this.yTouch = e.changedTouches[0].pageY;
+
+      if (this.doublePermission === true && this.inDoubleTapTime()) {
+        this.keys.push("DOUBLETAP");
+        this.doublePermission = false;
+      } else {
+        this.doublePermission = true;
+        this.doubleTapTime = 0;
+      }
+    });
+
+    window.addEventListener("touchmove", (e) => {
+      const distance = e.changedTouches[0].pageY - this.yTouch;
+      const distanceX = e.changedTouches[0].pageX - this.xTouch;
+
+      if (distance < -this.touchLimit && this.keys.indexOf("UP") === -1) {
+        this.keys.push("UP");
+      } else if (
+        distance > this.touchLimit &&
+        this.keys.indexOf("DOWN") === -1
+      ) {
+        this.keys.push("DOWN");
+      }
+      if (distanceX > this.touchLimit && this.keys.indexOf("FORWARD") === -1) {
+        this.keys.push("FORWARD");
+      } else if (
+        distanceX < -this.touchLimit &&
+        this.keys.indexOf("BACKWARD") === -1
+      ) {
+        this.keys.push("BACKWARD");
+      }
+    });
+
+    window.addEventListener("touchend", (e) => {
+      this.keys.splice(this.keys.indexOf("UP"), 1);
+      this.keys.splice(this.keys.indexOf("Down"), 1);
+      this.keys.splice(this.keys.indexOf("FORWARD"), 1);
+      this.keys.splice(this.keys.indexOf("BACKWARDS"), 1);
+    });
+  }
+
+  inDoubleTapTime() {
+    if (this.doubleTapTime < this.doubleTapTimeLimit) {
+      return true;
+    }
+  }
+
+  doubleTimeHandler() {
+    if (this.doubleTapTime <= this.doubleTapTimeLimit) {
+      this.doubleTapTime++;
+    }
   }
 
   enemyHandler() {
@@ -188,6 +249,7 @@ class Game {
     this.player.runLogic();
     this.gameOver();
     this.sound.play();
+    this.doubleTimeHandler();
   }
 
   displayOver() {
@@ -201,12 +263,9 @@ class Game {
       this.loose = true;
       this.displayOver();
       this.restart();
-      this.player.sadSound.src = "";
+      this.player.sadSound.src = "background/AmbientNatureBirdsWater01.wav";
       return true;
     }
-    // this.lost = true;
-    // enter dog2
-    //
   }
 
   loop() {

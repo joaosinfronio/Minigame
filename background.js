@@ -27,10 +27,10 @@ class Background {
 
     //For reverse direction linked with player direction
     //If limt is reached re posiition the image
-    if (this.x >= this.width) {
+    if (this.x >= this.width - this.speed) {
       this.x = -this.width;
     }
-    if (this.x <= -this.width) {
+    if (this.x <= -this.width + this.speed) {
       this.x = 0;
     }
 

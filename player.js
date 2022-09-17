@@ -40,6 +40,7 @@ class Player {
     this.maxFrame = 4;
     this.image.src = "player/Walk.png";
     this.sound.src = "player/0.wav";
+    this.sadSound.src = "player/Sad Dog 1.wav";
 
     this.lives = 10;
     this.direction = 1;
@@ -258,21 +259,30 @@ class Player {
 
     //Movement controls
     //Movement Right
-    if (this.game.keys.indexOf("ArrowRight") > -1) {
+    if (
+      this.game.keys.indexOf("ArrowRight") > -1 ||
+      this.game.keys.indexOf("FORWARD") > -1
+    ) {
       this.speed = this.game.speed;
       this.direction = 1;
       this.game.stop = 1;
       this.game.speedModifier = 1;
 
       //Movement Left
-    } else if (this.game.keys.indexOf("ArrowLeft") > -1) {
+    } else if (
+      this.game.keys.indexOf("ArrowLeft") > -1 ||
+      this.game.keys.indexOf("BACKWARD") > -1
+    ) {
       this.direction = -1;
       this.speed = -this.game.speed;
       this.game.stop = 1;
       this.game.speedModifier = 0.3;
 
       //Stop moving
-    } else if (this.game.keys.indexOf("ArrowDown") > -1) {
+    } else if (
+      this.game.keys.indexOf("ArrowDown") > -1 ||
+      this.game.keys.indexOf("DOWN") > -1
+    ) {
       this.direction = 0;
       this.speed = 0;
       this.game.stop = 0;
@@ -280,7 +290,8 @@ class Player {
 
       //Attack
     } else if (
-      this.game.keys.indexOf("Space") > -1 &&
+      (this.game.keys.indexOf("Space") > -1 ||
+        this.game.keys.indexOf("DOUBLETAP") > -1) &&
       this.power > this.powerTime
     ) {
       this.attack = 1;
@@ -293,7 +304,11 @@ class Player {
       this.power++;
     }
     //Fall
-    if (this.game.keys.indexOf("ArrowUp") > -1 && !this.checkJumping()) {
+    if (
+      (this.game.keys.indexOf("ArrowUp") > -1 ||
+        this.game.keys.indexOf("UP") > -1) &&
+      !this.checkJumping()
+    ) {
       this.forceUp -= 22;
     }
 
